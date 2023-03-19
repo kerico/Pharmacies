@@ -1,0 +1,36 @@
+﻿@page "/"
+@using Microsoft.EntityFrameworkCore;
+@using Pharmacies.Data;
+<PageTitle>Pharmacies</PageTitle>
+
+@inject IPharmacyService _service;
+<h1>List of pharmacies</h1>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Pavadinimas</th>
+                <th>Adresas</th>
+                <th>Pašto kodas</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var pharmacy in pharmacies)
+        {
+                        <tr>
+                            <td>@pharmacy.Name</td>
+                            <td>@pharmacy.Address</td>
+                            <td>@pharmacy.PostCode</td>
+                        </tr>
+        }
+        </tbody>
+    </table>
+
+@code {
+
+    private List<Pharmacy>? pharmacies;
+
+    protected override void OnInitialized()
+    {
+        pharmacies = _service.GetPharmacies();
+    }
+}

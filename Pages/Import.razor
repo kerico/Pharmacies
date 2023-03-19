@@ -1,0 +1,40 @@
+﻿@page "/import"
+@using System.Text.Json;
+@using Pharmacies.Data;
+@inject IPharmacyService _service;
+<PageTitle>Import pharmacies</PageTitle>
+
+
+<label for="lblMessage">JSON:</label>
+<textarea class="form-control textAreaSize" id="source" @bind="inputMessage" rows="5"></textarea>
+<input type="submit" id="upload" class="btn btn-primary" @onclick="OnParseClicked" value="Import" />
+<br />
+<input type="submit" id="update" class="btn btn-primary" @onclick="OnUpdateClicked" value="Update post codes" />
+
+@code {
+    private string? inputMessage;
+    private void OnParseClicked()
+    {
+        try
+        {
+            if (string.IsNullOrWhiteSpace(inputMessage))
+                throw new ValidationException("input cannot be empty");
+
+            var pharmacies = JsonSerializer.Deserialize<Pharmacy[]>(inputMessage);
+            _service.ImportPharmacies(pharmacies);
+        }
+        catch  (ValidationException ex)
+        {
+            //TODO: set error message
+        }
+        catch (Exception)
+        {
+            //TODO: handle all unhandled exceptions
+            throw;
+        }
+    }
+    private void OnUpdateClicked()
+    {
+        _service.UpdatePostCodes();
+    }
+}
